@@ -25,7 +25,7 @@ namespace AssemblyCSharp.UnitTypes
 		protected override GameObject CreateModel(){
 			var cube = GameObject.CreatePrimitive (PrimitiveType.Cube);
 			cube.name = "Unit Model";
-			cube.transform.position = new Vector3(0, 1, 0);
+			cube.transform.position = new Vector3(0, 0.5f, 0);
 			return cube;
 		}
 

@@ -59,7 +59,7 @@ public class HexGrid : MonoBehaviour {
 		unit.Coordinates = new HexPosition (unit.transform.position);
 	}
 
-	void SpawnUnit <T> (int player)  where T : Unit {
+	void SpawnUnit <T> (int player, HexPosition coordinates=null)  where T : Unit {
 		GameObject unit;
 		while(updating > 0) {
 			//do nothing.
@@ -70,7 +70,12 @@ public class HexGrid : MonoBehaviour {
 		unit.transform.SetParent(unitsRoot.transform);
 		--updating;
 		unit.SendMessage("SetGrid", this);
-
+        var unitBehaviour = unit.GetComponent<T>();
+        Debug.Log(unitBehaviour.Coordinates);
+        if (coordinates != null) {
+            unitBehaviour.Coordinates = coordinates;
+        }
+        
 	}
 	
 	public void remove (Unit unit) {
@@ -115,7 +120,10 @@ public class HexGrid : MonoBehaviour {
 	}
 
 	void Start () {
-		unitsRoot.BroadcastMessage ("SetGrid", this);
+        this.SpawnUnit<Cube>(0, new HexPosition(1, 1));
+        this.SpawnUnit<Cube>(0, new HexPosition(2, 2));
+        this.SpawnUnit<Cube>(1, new HexPosition(-1, -1));
+        this.SpawnUnit<Cube>(1, new HexPosition(-2, -2));
 		//timeout = MAX_TIME;
 		HexPosition.setColor("Path", Color.yellow, 1);
 		HexPosition.setColor("Selection", Color.green, 2);
@@ -329,7 +337,15 @@ public class HexGrid : MonoBehaviour {
 				SpawnUnit <Cube>(0);
 				return;
 			}
-			return;
+
+            if (GUI.Button(new Rect(10, 100, 90, 20), "Add unit 2"))
+            {
+                SpawnUnit<Cube>(0, new HexPosition(2, 2));
+                SpawnUnit<Cube>(0, new HexPosition(2, 3));
+                SpawnUnit<Cube>(0, new HexPosition(2, 4));
+                return;
+            }
+            return;
 		}
 		if (gameOver) {
 			GUIStyle style = new GUIStyle ();
