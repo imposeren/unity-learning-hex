@@ -20,6 +20,19 @@ public class Unit : MonoBehaviour {
 	private Vector3[] path;
 	private int n;	//position on the path
 	private const float MOTION_SPEED = 0.05f;
+	protected virtual GameObject CreateModel(){
+		throw new System.NotImplementedException ();
+	}
+
+	private void SetColor(){
+		var cube = gameObject.transform.Find("Unit Model");
+		var cubeRenderer = cube.GetComponent<MeshRenderer>();
+		if (this.PLAYER == 0) {
+			cubeRenderer.material.color = Color.red;
+		} else {
+			cubeRenderer.material.color = Color.blue;
+		}
+	}
 
 	void SetGrid (HexGrid grid) {
 		this.grid = grid;
@@ -61,6 +74,18 @@ public class Unit : MonoBehaviour {
 			transform.position = value.getPosition ();
 			value.add ("Unit", this);
 		}
+	}
+
+	public static GameObject Spawn<T>(int player) where T : Unit{
+		var unit = new GameObject("Unit Cube");
+		var unitBehaveior = unit.AddComponent<T>();
+		unitBehaveior.PLAYER = player;
+		
+		GameObject cube = unitBehaveior.CreateModel();
+		cube.transform.SetParent(unit.transform);
+		unitBehaveior.SetColor();
+
+		return unit;
 	}
 	
 	public State Status {

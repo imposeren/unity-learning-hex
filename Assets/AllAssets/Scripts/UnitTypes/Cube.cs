@@ -8,12 +8,27 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 using System;
-namespace AssemblyCSharp
+using UnityEngine;
+
+namespace AssemblyCSharp.UnitTypes
 {
-	public enum UnitTypes
+	public class Cube: Unit
 	{
-		box,
-		sphere
+		public Cube(){
+			this.MAX_HP = 20;
+			this.STRENGTH = 10;
+			this.VARIATION = 5;
+			this.SPEED = 5;
+			this.RANGE = 1;
+		}
+
+		protected override GameObject CreateModel(){
+			var cube = GameObject.CreatePrimitive (PrimitiveType.Cube);
+			cube.name = "Unit Model";
+			cube.transform.position = new Vector3(0, 1, 0);
+			return cube;
+		}
+
 	}
 }
 

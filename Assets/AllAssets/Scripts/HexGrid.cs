@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
-using AssemblyCSharp;
+using AssemblyCSharp.UnitTypes;
 
 /************************************************************************************************************\
  * HexGrid.cs by Daniel Carrier																				*
@@ -59,44 +59,18 @@ public class HexGrid : MonoBehaviour {
 		unit.Coordinates = new HexPosition (unit.transform.position);
 	}
 
-	void SpawnUnit (UnitTypes unitType, int player) {
+	void SpawnUnit <T> (int player)  where T : Unit {
 		GameObject unit;
 		while(updating > 0) {
 			//do nothing.
 		}
 
-		if (unitType == UnitTypes.box) {
-			++updating;
-			unit = new GameObject("Unit Cube");
-			var unitBehaveior = unit.AddComponent<Unit>();
-			unitBehaveior.PLAYER = player;
-			unitBehaveior.MAX_HP = 20;
-			unitBehaveior.STRENGTH = 10;
-			unitBehaveior.VARIATION = 5;
-			unitBehaveior.SPEED = 5;
-			unitBehaveior.RANGE = 1;
-			GameObject cube = GameObject.CreatePrimitive(PrimitiveType.Cube);
-			var cubeRenderer = cube.GetComponent<MeshRenderer>();
-			if (player == 0) {
-				cubeRenderer.material.color = Color.red;
-			} else {
-				cubeRenderer.material.color = Color.blue;
-			}
+		++updating;
+		unit = Unit.Spawn<T>(player);
+		unit.transform.SetParent(unitsRoot.transform);
+		--updating;
+		unit.SendMessage("SetGrid", this);
 
-			cube.transform.position = new Vector3(0, 1, 0);
-			cube.transform.SetParent(unit.transform);
-			unit.transform.SetParent(unitsRoot.transform);
-			--updating;
-			unit.SendMessage("SetGrid", this);
-
-		} else if (unitType == UnitTypes.sphere) {
-			++updating;
-			Debug.Log ("Created sphere");
-			--updating;
-		} else {
-			Debug.Log ("Panic");
-			throw new UnityException();
-		}
 	}
 	
 	public void remove (Unit unit) {
@@ -352,7 +326,7 @@ public class HexGrid : MonoBehaviour {
 				return;
 			}
 			if (GUI.Button (new Rect (10, 70, 90, 20), "Add unit")) {
-				SpawnUnit(UnitTypes.box, 0);
+				SpawnUnit <Cube>(0);
 				return;
 			}
 			return;
