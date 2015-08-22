@@ -36,7 +36,7 @@ public class AI {
 		Unit current = null;
 		double score = 0;
 		foreach (Unit unit in units) {
-			if (unit.PLAYER != player || unit.Status != Unit.State.MOVE) {
+			if (unit.PLAYER != player || unit.Phase != Unit.Phases.MOVE) {
 				continue;
 			}
 			double new_score = unit.STRENGTH;
